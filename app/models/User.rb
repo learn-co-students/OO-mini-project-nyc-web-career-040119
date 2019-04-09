@@ -1,4 +1,4 @@
-class User
+class User < Recipe
   @@all = []
 
   attr_reader :name
@@ -12,37 +12,39 @@ class User
     @@all
   end
 
-  def recipes
+  def my_recipes
     RecipeCard.all.select { |card| card.user == self }
   end
 
-  def add_recipe_card(recipe, date, rating)
-
+  def my_allergens
+    Allergy.all.select { |allergy| allergy.user == self }
   end
 
-  def declare_allergy(ingredient) #, name=nil)
-    # if Allergy.all.include?(ingredient)
+  # def initialize(user, recipe, date, rating)
+  def add_recipe_card(recipe, rating)
+    RecipeCard.new(self, recipe, Time.now, rating)
+  end
+
+  def declare_allergy(ingredient)
       Allergy.new(self, ingredient)
-    # else
-    #   ingredient = Ingredient.new(name)
-    #   Allergy.new(self, ingredient)
-    # end
   end
 
   def allergens
-
+    my_allergens.map { |allergen| allergen.ingredient }
   end
 
   def top_three_recipes
-
+    recipes.max_by(3) { |recipe| recipe.rating}
   end
 
   def most_recent_recipe
-
+    RecipeCard.all.max_by { |card| card.date }
   end
 
   ##BONUS##
+
   def safe_recipes
+    
 
   end
 

@@ -14,34 +14,40 @@ class Recipe
   end
 
   def self.most_popular
-    # RecipeCard.all.map do |card|
-    #   card.recipe
-    # end
-    # popular = {}
-    # RecipeCard.all.each do |card|
-    #   popular[card.recipe] = card.count
-    # end
-    # binding.pry
-
+    self.all.max_by { |recipe| recipe.users.length }
   end
 
+  ## HELPER METHODS
+  def my_cards
+    RecipeCard.all.select { |card| card.recipe == self }
+  end
+
+  def my_ingredients
+    RecipeIngredient.all.select { |ingredient| ingredient.recipe == self }
+  end
+
+  def my_allergens
+    Allergy.all.select { |allergen|  ingredients.include?(allergen.ingredient) }
+  end
+
+  # def uniq_cards
+  #   RecipeCard.all.select.uniq { |card| card.recipe.name }
+  # end
+
   def users
-    recipe_cards = RecipeCard.all.select { |card| card.recipe == self }
-    recipe_cards.map do |card|
-      card.user
-    end
+    my_cards.map { |card| card.user }
   end
 
   def ingredients
-
+    my_ingredients.map { |card| card.ingredients }
   end
 
   def allergens
-
+    my_allergens.map { |allergen| allergen.ingredient }.uniq
   end
 
-  def add_ingredients
-
+  def add_ingredients(ingre_arr)
+    ingre_arr.each { |ingredient| RecipeIngredient.new(self,ingredient) }
   end
 
 end
